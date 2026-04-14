@@ -7,43 +7,58 @@ import (
 	"strings"
 )
 
-func GetPathSize(path string, human, all bool) (string, error) {
-	info, err := os.Lstat(path)
+func GetPathSize(path string, human, all, recursive bool) (string, error) {
+	size, err := getPathSizeBytes(path, all, recursive)
 	if err != nil {
 		return "", err
 	}
 
-	var totalSize int64
+	return formatSize(size, human), nil
+}
 
-	if !info.IsDir() {
-		totalSize = info.Size()
-	} else {
-		entries, err := os.ReadDir(path)
-		if err != nil {
-			return "", err
-		}
-
-		for _, entry := range entries {
-			if !all && strings.HasPrefix(entry.Name(), ".") {
-				continue
-			}
-
-			entryPath := filepath.Join(path, entry.Name())
-
-			entryInfo, err := os.Lstat(entryPath)
-			if err != nil {
-				return "", err
-			}
-
-			if entryInfo.IsDir() {
-				continue
-			}
-
-			totalSize += entryInfo.Size()
-		}
+func getPathSizeBytes(path string, all, recursive bool) (int64, error) {
+	info, err := os.Lstat(path)
+	if err != nil {
+		return 0, err
 	}
 
-	return formatSize(totalSize, human), nil
+	if !info.IsDir() {
+		return info.Size(), nil
+	}
+
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		return 0, err
+	}
+
+	var totalSize int64
+
+	for _, entry := range entries {
+		if !all && strings.HasPrefix(entry.Name(), ".") {
+			continue
+		}
+
+		entryPath := filepath.Join(path, entry.Name())
+		entryInfo, err := os.Lstat(entryPath)
+		if err != nil {
+			return 0, err
+		}
+
+		if entryInfo.IsDir() {
+			if recursive {
+				dirSize, err := getPathSizeBytes(entryPath, all, recursive)
+				if err != nil {
+					return 0, err
+				}
+				totalSize += dirSize
+			}
+			continue
+		}
+
+		totalSize += entryInfo.Size()
+	}
+
+	return totalSize, nil
 }
 
 func formatSize(size int64, human bool) string {
