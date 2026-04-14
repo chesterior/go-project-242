@@ -40,7 +40,7 @@ func main() {
 			hiddenFiles := cmd.Bool("all")
 			recursive := cmd.Bool("recursive")
 
-			size, err := code.GetPathSize(path, human, hiddenFiles, recursive)
+			size, err := code.GetPathSize(path, hiddenFiles, human, recursive)
 			if err != nil {
 				return err
 			}
