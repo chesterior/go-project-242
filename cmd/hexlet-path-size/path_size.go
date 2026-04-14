@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-func GetPathSize(path string) (string, error) {
+func GetPathSize(path string, human bool) (string, error) {
 	info, err := os.Lstat(path)
 	if err != nil {
 		return "", err
@@ -38,5 +38,25 @@ func GetPathSize(path string) (string, error) {
 		}
 	}
 
-	return fmt.Sprintf("%dB", totalSize), nil
+	return formatSize(totalSize, human), nil
+}
+
+func formatSize(size int64, human bool) string {
+	if !human {
+		return fmt.Sprintf("%dB", size)
+	}
+	units := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
+	value := float64(size)
+	unitIndex := 0
+
+	for value >= 1024 && unitIndex < len(units)-1 {
+		value /= 1024
+		unitIndex++
+	}
+
+	if unitIndex == 0 {
+		return fmt.Sprintf("%dB", size)
+	}
+
+	return fmt.Sprintf("%.1f%s", value, units[unitIndex])
 }

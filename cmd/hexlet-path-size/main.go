@@ -10,17 +10,26 @@ import (
 )
 
 func main() {
-	app := &cli.Command{
+	cmd := &cli.Command{
 		Name:  "hexlet-path-size",
 		Usage: "print size of a file or directory",
+		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:    "human",
+				Aliases: []string{"H"},
+				Usage:   "human-readable sizes (auto-select unit)",
+				Value:   false,
+			},
+		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
 			path := "."
-
-			if cmd.NArg() > 0 {
-				path = cmd.Args().First()
+			if cmd.Args().Len() > 0 {
+				path = cmd.Args().Get(0)
 			}
 
-			size, err := GetPathSize(path)
+			human := cmd.Bool("human")
+
+			size, err := GetPathSize(path, human)
 			if err != nil {
 				return err
 			}
@@ -30,7 +39,7 @@ func main() {
 		},
 	}
 
-	if err := app.Run(context.Background(), os.Args); err != nil {
+	if err := cmd.Run(context.Background(), os.Args); err != nil {
 		log.Fatal(err)
 	}
 }
