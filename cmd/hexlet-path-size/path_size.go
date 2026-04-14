@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
-func GetPathSize(path string, human bool) (string, error) {
+func GetPathSize(path string, human, all bool) (string, error) {
 	info, err := os.Lstat(path)
 	if err != nil {
 		return "", err
@@ -23,6 +24,10 @@ func GetPathSize(path string, human bool) (string, error) {
 		}
 
 		for _, entry := range entries {
+			if !all && strings.HasPrefix(entry.Name(), ".") {
+				continue
+			}
+
 			entryPath := filepath.Join(path, entry.Name())
 
 			entryInfo, err := os.Lstat(entryPath)
