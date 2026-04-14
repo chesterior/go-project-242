@@ -1,7 +1,6 @@
 package main
 
 import (
-	"code/code"
 	"context"
 	"fmt"
 	"log"
@@ -40,7 +39,7 @@ func main() {
 			hiddenFiles := cmd.Bool("all")
 			recursive := cmd.Bool("recursive")
 
-			size, err := code.GetPathSize(path, human, hiddenFiles, recursive)
+			size, err := GetPathSize(path, human, hiddenFiles, recursive)
 			if err != nil {
 				return err
 			}
