@@ -1,5 +1,5 @@
-module chesterior/go-project-242
+module code
 
-go 1.22.3
+go 1.23.6
 
-require github.com/urfave/cli/v3 v3.8.0
+require github.com/urfave/cli/v3 v3.8.0 // indirect
