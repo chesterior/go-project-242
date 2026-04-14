@@ -1,6 +1,4 @@
-# gopackage
-
-[![main](https://github.com/hexlet-boilerplates/gopackage/actions/workflows/main.yml/badge.svg)](https://github.com/hexlet-boilerplates/gopackage/actions/workflows/main.yml)
+# go project 242
 
 ## Requirements
 
@@ -21,6 +19,5 @@ make lint
 ```
 
 ## [Asciinema](https://asciinema.org/a/9uLbXLV5xScgnSDV)
-
 
 ---
